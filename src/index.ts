@@ -10,7 +10,8 @@ import { ChatView } from "./Chat/Controllers";
 
 import {
   USER_LIST, SUBMIT_MESSAGE,
-  USER_CONVERSATIONS, SINGLE_CONVERSIONS
+  USER_CONVERSATIONS, SINGLE_CONVERSIONS,
+  TYPING, USER_TYPING, NOT_TYPING, USER_NOT_TYPING
 } from "./Utils/SocketEvents";
 
 const app = express();
@@ -66,6 +67,18 @@ io.on('connection', (socket: any) => {
     await _chatView.getSingleConversationS(user_id, function(res: any){
       callback(res);
     })
+  });
+
+  socket.on(TYPING, function(payload: any, callback: Function){
+    io.to(`${ payload.socket_id }`).emit(USER_TYPING, {
+      typeing: true,
+    });
+  });
+
+  socket.on(NOT_TYPING, function(payload: any, callback: Function){
+    io.to(`${ payload.socket_id }`).emit(USER_NOT_TYPING, {
+      typeing: false,
+    });
   });
 
 });
