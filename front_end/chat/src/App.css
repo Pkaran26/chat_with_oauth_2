@@ -1,0 +1,30 @@
+.cursor {
+  cursor: pointer;
+}
+
+.messagebox {
+  height: 400px;
+  overflow: auto;
+}
+
+.clearfix {
+
+}
+
+.message {
+  padding: 5px;
+  border-radius: 5px;
+  color: #fff;
+}
+
+.message div:last-child{
+  text-align: right;
+}
+
+.messageLeft {
+  float: left;
+}
+
+.messageRight {
+  float: right;
+}
