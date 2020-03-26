@@ -2,7 +2,7 @@
   "name": "chat_with_oauth_2",
   "version": "1.0.0",
   "description": "this is a basic chat app, used oauth 2.0 for authentication.",
-  "main": "index.js",
+  "main": "index.ts",
   "repository": "https://github.com/Pkaran26/chat_with_oauth_2.git",
   "author": "Prateek Kaushik",
   "license": "MIT",
@@ -28,6 +28,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "moment": "^2.24.0",
-    "mongodb": "^3.5.5"
+    "mongodb": "^3.5.5",
+    "socket.io": "^2.3.0"
   }
 }
