@@ -24,7 +24,9 @@ const UserList = ({ users, returnUser })=>{
 }
 
 const User = ({ e, returnUser })=>(
-  <span className="list-group-item list-group-item-action cursor" onClick={ ()=> returnUser(e) }>
+  <span className="list-group-item list-group-item-action cursor" style={{ position: 'relative' }} onClick={ ()=> returnUser(e) }>
+    <img src={ e.imageUrl } className="pic" />
+    <i class="fas fa-circle text-success online"></i>
     { e.name }
   </span>
 )

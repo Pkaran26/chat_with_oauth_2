@@ -30,7 +30,7 @@ const Message = ({ name, msg, created_at })=>(
     <strong>{ name }</strong>
     <div>{ msg }</div>
     <div>
-      <small>{ moment(created_at).format('DD-MMM-YY hh:mm A') }</small>
+      <small>{ moment(created_at).format('DD-MMM-YYYY') }</small>
     </div>
   </React.Fragment>
 )

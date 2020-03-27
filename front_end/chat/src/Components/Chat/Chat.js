@@ -4,6 +4,7 @@ import UserList from './UserList'
 import MessageBox from './MessageBox/MessageBox'
 import moment from 'moment'
 import UserLogin from '../User/UserLogin'
+import Header from '../Shared/Header'
 
 import {
   CONNECTION, DISCONNECT, LOGIN,
@@ -122,7 +123,12 @@ class Chat extends Component{
     return(
       <React.Fragment>
         { loggedUser?
-          <div className="row">
+          <div style={{ marginTop: '100px' }}>
+            <Header
+              name={ loggedUser.name }
+              imageUrl={ loggedUser.imageUrl }
+            />
+            <div className="row">
             <div className="col-lg-4 col-md-4">
               <UserList
                 users={ users }
@@ -140,6 +146,7 @@ class Chat extends Component{
                 />
             :null }
             </div>
+          </div>
           </div>
         :
           <UserLogin
