@@ -28,8 +28,19 @@ class Chat extends Component{
 
   setCurrentUser = (user)=>{
     this.setState({
-      currentUser: user,
-      messages: []
+      currentUser: user
+    })
+    const { currentUser, loggedUser } = this.state
+    const payload = {
+      msg_from: user._id,
+      msg_to: loggedUser._id
+    }
+    console.log(payload);
+    this.socket.emit(SINGLE_CONVERSIONS, payload, (data)=>{
+      console.log(data);
+      this.setState({
+        messages: data
+      })
     })
   }
 

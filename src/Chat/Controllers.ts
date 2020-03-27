@@ -47,26 +47,28 @@ export class ChatView {
     }
   }
 
-  async getSingleConversationS(user_id: string, callback: Function){
+  async getSingleConversationS(msg_from: string, msg_to: string, callback: Function){
     try {
       DBPool( async (db: any)=>{
-        const res = await db.collection(this.user).findMany(
-          { _id: new ObjectId(user_id) },
-          { $lookup: {
-            from: "user",
-            localField: "msg_from",
-            foreignField: "_id",
-            as: "msg_from",
-          } },
-          { $lookup: {
-            from: "user",
-            localField: "msg_to",
-            foreignField: "_id",
-            as: "msg_to",
-          } },
-          { $sort: { created_at: -1 } }
-        )
-        .catch((err: any)=>{  })
+        const res = await db.collection(this.messages).aggregate([
+        { $match: { $or: [
+            { $and: [
+                { msg_from: new ObjectId(msg_from) },
+                { msg_to : new ObjectId(msg_to) }
+              ]
+            },
+            { $and: [
+                { msg_to: new ObjectId(msg_from) },
+                { msg_from : new ObjectId(msg_to) }
+              ]
+            }
+            ]
+          }
+        },
+        { $sort: { created_at: -1 } }
+      ])
+      .toArray()
+      .catch((err: any)=>{  })
         callback(res);
       });
     } catch (err) {

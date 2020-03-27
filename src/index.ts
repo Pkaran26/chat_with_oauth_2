@@ -105,12 +105,13 @@ io.on('connection', (socket: any) => {
   //   })
   // });
   //
-  // socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
-  //   const { user_id } = payload
-  //   await _chatView.getSingleConversationS(user_id, function(res: any){
-  //     callback(res);
-  //   })
-  // });
+  socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
+    console.log(payload);
+    
+    await _chatView.getSingleConversationS(payload.msg_from, payload.msg_to, function(res: any){
+      callback(res);
+    })
+  });
 
 });
 
