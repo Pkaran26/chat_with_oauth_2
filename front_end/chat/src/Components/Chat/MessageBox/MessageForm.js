@@ -6,6 +6,7 @@ const MessageForm = ({ submitMsg })=>{
   const onSubmit = (e)=>{
     e.preventDefault()
     submitMsg(msg)
+    setMsg('')
   }
   return(
     <form method="post" onSubmit={ onSubmit }>
@@ -16,7 +17,7 @@ const MessageForm = ({ submitMsg })=>{
           className="form-control"
           onChange={ (e)=> setMsg(e.target.value) }
           value={ msg }
-          required="true"
+          required={ true }
         />
         <div className="input-group-append">
           <input

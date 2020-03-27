@@ -11,11 +11,4 @@ UserRouters.post('/create', async (req: Request, res: Response)=>{
   });
 })
 
-UserRouters.post('/login', async (req: Request, res: Response)=>{
-  const result = await _userView.userLogin(req.body, (result: any)=>{
-    console.log(result);
-    res.json(result);
-  });
-})
-
 export default UserRouters;

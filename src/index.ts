@@ -1,16 +1,15 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const moment = require('moment');
-
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import moment from 'moment';
 import UserRouters from "./User/Routers";
 import { UserView } from './User/Controllers';
 
 import { ChatView } from "./Chat/Controllers";
 
 import {
-  USER_LIST, SUBMIT_MESSAGE,
-  USER_CONVERSATIONS, SINGLE_CONVERSIONS,
+  GET_USER_LIST, USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
+  LOGIN, USER_DETAILS, USER_CONVERSATIONS, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING, NOT_TYPING, USER_NOT_TYPING
 } from "./Utils/SocketEvents";
 
@@ -28,11 +27,13 @@ let server = http.Server(app);
 let socketIO = require('socket.io');
 let io = socketIO(server);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3005;
 
 let connections: any = [];
 const _userView = new UserView();
 const _chatView = new ChatView();
+
+let users: any = [];
 
 io.on('connection', (socket: any) => {
   connections.push(socket);
@@ -40,48 +41,85 @@ io.on('connection', (socket: any) => {
 
   socket.on('disconnect', function(data: any){
     connections.splice(connections.indexOf(socket), 1);
+  //  updateUsers()
     console.log('Connected: ', connections.length);
   });
 
-  socket.on(USER_LIST, async function(callback: Function){
+  socket.on(LOGIN, async function(payload: any, callback: Function){
+    await _userView.createUser(payload.payload, function(res: any){
+      users.push({
+        ...res,
+        socket_id: payload.socket_id,
+        is_online: true
+      })
+      callback(res);
+      console.log(users);
+      updateUsers();
+    })
+  });
+
+  const updateUsers = ()=>{
+    io.sockets.emit(USER_LIST, users);
+    try {
+      // users[socket_id] = {
+      //   ...users[socket_id],
+      //   is_online: false
+      // }
+
+    } catch (error) {
+
+    }
+  }
+
+  socket.on(GET_USER_LIST, async function(callback: Function){
     await _userView.userList(function(users: any){
       callback(users);
     })
+    .catch((err: any)=>{});
   });
 
   socket.on(SUBMIT_MESSAGE, async function(payload: any, callback: Function){
-    await _chatView.submitMessage(payload, function(res: any){
-      callback(res);
+    await _chatView.submitMessage(payload.message, function(res: any){
+      io.to(`${payload.receiver_socket_id}`).emit(NEW_MESSAGE, payload.message);
+      callback(res.ops[0]);
     })
   });
-
-  socket.on(USER_CONVERSATIONS, async function(payload: any, callback: Function){
-    const { user_id } = payload
-    await _chatView.getUserConversations(user_id, function(res: any){
-      callback(res);
-    })
-  });
-
-  socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
-    const { user_id } = payload
-    await _chatView.getSingleConversationS(user_id, function(res: any){
-      callback(res);
-    })
-  });
-
-  socket.on(TYPING, function(payload: any, callback: Function){
-    io.to(`${ payload.socket_id }`).emit(USER_TYPING, {
-      typeing: true,
-    });
-  });
-
-  socket.on(NOT_TYPING, function(payload: any, callback: Function){
-    io.to(`${ payload.socket_id }`).emit(USER_NOT_TYPING, {
-      typeing: false,
-    });
-  });
+  //
+  // socket.on(SUBMIT_MESSAGE, async function(payload: any, callback: Function){
+  //   await _chatView.submitMessage(payload, function(res: any){
+  //     callback(res);
+  //   })
+  // });
+  //
+  //
+  // socket.on(USER_CONVERSATIONS, async function(payload: any, callback: Function){
+  //   const { user_id } = payload
+  //   await _chatView.getUserConversations(user_id, function(res: any){
+  //     callback(res);
+  //   })
+  // });
+  //
+  // socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
+  //   const { user_id } = payload
+  //   await _chatView.getSingleConversationS(user_id, function(res: any){
+  //     callback(res);
+  //   })
+  // });
+  //
+  // socket.on(TYPING, function(payload: any, callback: Function){
+  //   io.to(`${ payload.socket_id }`).emit(USER_TYPING, {
+  //     typeing: true,
+  //   });
+  // });
+  //
+  // socket.on(NOT_TYPING, function(payload: any, callback: Function){
+  //   io.to(`${ payload.socket_id }`).emit(USER_NOT_TYPING, {
+  //     typeing: false,
+  //   });
+  // });
 
 });
+
 
 server.listen(port, () => {
     console.log(`started on port: ${port}`);

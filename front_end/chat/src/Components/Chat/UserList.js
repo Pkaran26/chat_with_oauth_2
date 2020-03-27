@@ -7,7 +7,7 @@ const UserList = ({ users, returnUser })=>{
         <h5>Users List</h5>
       </div>
       <div className="card-body">
-      <div class="list-group">
+      <div className="list-group">
         { users && users.length>0?
           users.map((e, i)=>(
             <User
@@ -24,7 +24,7 @@ const UserList = ({ users, returnUser })=>{
 }
 
 const User = ({ e, returnUser })=>(
-  <span class="list-group-item list-group-item-action cursor" onClick={ ()=> returnUser(e) }>
+  <span className="list-group-item list-group-item-action cursor" onClick={ ()=> returnUser(e) }>
     { e.name }
   </span>
 )

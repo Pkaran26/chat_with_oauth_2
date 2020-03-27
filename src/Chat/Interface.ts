@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
 
 export interface Message = {
-  msg_from: ObjectId,
-  msg_to: ObjectId,
+  msg_from: string,
+  msg_to: string,
   msg: string,
   created_at: date
 }

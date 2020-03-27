@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "moment": "^2.24.0",
     "mongodb": "^3.5.5",
+    "react-google-login": "^5.1.2",
     "socket.io": "^2.3.0"
   }
 }

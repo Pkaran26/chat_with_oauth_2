@@ -9,11 +9,18 @@ export class UserView {
   async createUser(payload: User, callback: Function){
     try {
       DBPool( async (db: any)=>{
-        const res = await db.collection(this.user).insertOne({
-          ...payload,
-          created_at: moment().format('YYYY-MM-DD'),
-        });
-        callback(res);
+        const user = await db.collection(this.user).findOne({
+          email: payload.email
+        })
+        if(user){
+          callback(user);
+        }else{
+          const res = await db.collection(this.user).insertOne({
+            ...payload,
+            created_at: moment().format('YYYY-MM-DD'),
+          });
+          callback(res.ops[0]);
+        }
       });
     } catch (err) {
       callback(null);
@@ -21,44 +28,15 @@ export class UserView {
     }
   }
 
-  async userLogin(payload: any, callback: Function){
-    try {
-      DBPool( async (db: any)=>{
-        const { email, password } = payload;
-        const res = await db.collection(this.user).findOne(
-          { email: email, password: password },
-          { projection: { password: 0 } }
-        );
-        if(res){
-            callback({
-              status: true,
-              user: res,
-            });
-        }else{
-          callback({ status: false });
-        }
-      });
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
-  }
-
   async userList(callback: Function){
     try {
       DBPool( async (db: any)=>{
-        const res = await db.collection(this.user).aggregate([
-          { $sort: { created_at: -1 } },
-          { projection: { password: 0 } }
+        callback( await db.collection(this.user).aggregate([
+          { $sort: { created_at: -1} },
+           { $project: { password: 0 } }
         ])
-        if(res){
-            callback({
-              status: true,
-              user: res,
-            });
-        }else{
-          callback({ status: false });
-        }
+        .toArray()
+        .catch((err: any)=>{  }) )
       });
     } catch (err) {
       console.log(err);

@@ -27,8 +27,8 @@ export const RightMessage = ({ msg_to: { name }, msg, created_at })=>{
 
 const Message = ({ name, msg, created_at })=>(
   <React.Fragment>
-    <strong>test</strong>
-    <div>this is test message</div>
+    <strong>{ name }</strong>
+    <div>{ msg }</div>
     <div>
       <small>{ moment(created_at).format('DD-MMM-YY hh:mm A') }</small>
     </div>

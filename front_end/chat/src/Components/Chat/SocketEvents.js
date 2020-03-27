@@ -1,8 +1,11 @@
-export const GET_USER_LIST = 'GET_USER_LIST';
+export const CONNECTION = 'connect'
+export const DISCONNECT = 'disconnect'
+export const ONLINEUSERS = 'ONLINEUSERS'
 
 export const LOGIN = 'LOGIN'
 export const USER_DETAILS = 'USER_DETAILS'
 
+export const GET_USER_LIST = 'GET_USER_LIST';
 export const USER_LIST = 'USER_LIST';
 
 export const SUBMIT_MESSAGE = 'SUBMIT_MESSAGE';

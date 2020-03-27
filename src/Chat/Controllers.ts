@@ -8,13 +8,15 @@ export class ChatView {
   private messages: string = 'messages';
   private user: string = 'user';
 
-  async submitMessage(payload: Message, callback: Function){
+  async submitMessage(payload: any, callback: Function){
     try {
       DBPool( async (db: any)=>{
         const res = await db.collection(this.messages).insertOne({
           ...payload,
-          created_at: moment().format('YYYY-MM-DD'),
-        });
+          msg_from: new ObjectId(payload.msg_from),
+          msg_to: new ObjectId(payload.msg_to),
+        })
+        .catch((err: any)=>{  })
         callback(res);
       });
     } catch (err) {
@@ -34,8 +36,9 @@ export class ChatView {
             foreignField: "_id",
             as: "conversations",
           } },
-          { projection: { password: 0 } }
-        );
+          { $project: { password: 0 } }
+        )
+        .catch((err: any)=>{  })
         callback(res);
       });
     } catch (err) {
@@ -62,7 +65,8 @@ export class ChatView {
             as: "msg_to",
           } },
           { $sort: { created_at: -1 } }
-        );
+        )
+        .catch((err: any)=>{  })
         callback(res);
       });
     } catch (err) {

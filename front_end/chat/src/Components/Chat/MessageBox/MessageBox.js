@@ -6,13 +6,13 @@ const MessageBox = ({ currentUser, messages, submitMsg })=>{
   return(
     <div className="card bg-light">
       <div className="card-header">
-        <h5></h5>
+        <h5>{ currentUser? currentUser.name : null }</h5>
       </div>
       <div className="card-body messagebox">
         { messages && messages.length>0?
           messages.map((e, i)=>(
             <div key={ i } className="clearfix">
-              { currentUser._id === e._id?
+              { currentUser._id === e.msg_to?
                 <RightMessage { ...e } />
               :
                 <LeftMessage { ...e }/>
