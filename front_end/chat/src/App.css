@@ -14,6 +14,12 @@
   left: 45px;
 }
 
+.online2{
+  position: absolute;
+  bottom: 18px;
+  left: 45px;
+}
+
 .messagebox {
   height: 300px;
   overflow: auto;
