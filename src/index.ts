@@ -42,7 +42,6 @@ io.on('connection', (socket: any) => {
   socket.on('disconnect', function(data: any){
     connections.splice(connections.indexOf(socket), 1);
     users = users.filter((e: any)=>{
-      console.log(e.socket_id, socket.id, e.socket_id !== socket.id);
       return e.socket_id !== socket.id
     })
     updateUsers()
@@ -95,14 +94,10 @@ io.on('connection', (socket: any) => {
   });
 
   socket.on(TYPING, function(payload: any){
-    console.log(payload);
-
     io.to(`${payload.receiver_socket_id}`).emit(USER_TYPING, payload.typing);
   });
 
   socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
-    console.log(payload);
-
     await _chatView.getSingleConversationS(payload.msg_from, payload.msg_to, function(res: any){
       callback(res);
     })
