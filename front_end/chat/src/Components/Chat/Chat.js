@@ -6,10 +6,10 @@ import moment from 'moment'
 import UserLogin from '../User/UserLogin'
 
 import {
-  CONNECTION, DISCONNECT, LOGIN, USER_DETAILS,
+  CONNECTION, DISCONNECT, LOGIN,
   GET_USER_LIST, USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
   USER_CONVERSATIONS, SINGLE_CONVERSIONS,
-  TYPING, USER_TYPING, NOT_TYPING, USER_NOT_TYPING
+  TYPING, USER_TYPING, NOT_TYPING
 } from "./SocketEvents";
 
 class Chat extends Component{
@@ -21,6 +21,7 @@ class Chat extends Component{
       loggedUser: '',
       currentUser: '',
       messages: [],
+      typing: ''
     }
     this.socket = null
   }
@@ -60,7 +61,13 @@ class Chat extends Component{
       this.setState({
         messages: [...messages, data]
       })
-      console.log(data);
+    })
+
+    this.socket.on(USER_TYPING, (data)=>{
+      const { typing }= this.state
+      this.setState({
+        typing: data
+      })
     })
   }
 
@@ -88,12 +95,19 @@ class Chat extends Component{
       this.setState({
         messages: [...messages, data]
       })
-      console.log(data);
+    })
+  }
+
+  userTyping = (value)=>{
+    const { currentUser } = this.state
+    this.socket.emit(TYPING, {
+      receiver_socket_id: currentUser.socket_id,
+      typing: value
     })
   }
 
   render(){
-    const { users, currentUser, loggedUser, messages } = this.state
+    const { users, currentUser, loggedUser, messages, typing } = this.state
     return(
       <React.Fragment>
         { loggedUser?
@@ -109,6 +123,8 @@ class Chat extends Component{
                 <MessageBox
                   currentUser={ currentUser }
                   messages={ messages }
+                  typing={ typing }
+                  userTyping={ this.userTyping }
                   submitMsg={ this.submitMsg }
                 />
             :null }

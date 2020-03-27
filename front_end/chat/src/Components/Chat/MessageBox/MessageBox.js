@@ -2,11 +2,12 @@ import React from 'react'
 import MessageForm from './MessageForm'
 import { LeftMessage, RightMessage } from './Message'
 
-const MessageBox = ({ currentUser, messages, submitMsg })=>{
+const MessageBox = ({ currentUser, messages, typing, userTyping, submitMsg })=>{
   return(
     <div className="card bg-light">
       <div className="card-header">
         <h5>{ currentUser? currentUser.name : null }</h5>
+        <span>{ typing }</span>
       </div>
       <div className="card-body messagebox">
         { messages && messages.length>0?
@@ -26,6 +27,7 @@ const MessageBox = ({ currentUser, messages, submitMsg })=>{
       <div className="card-footer">
         <MessageForm
           submitMsg={ submitMsg }
+          userTyping={ userTyping }
         />
       </div>
     </div>

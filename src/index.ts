@@ -9,8 +9,8 @@ import { ChatView } from "./Chat/Controllers";
 
 import {
   GET_USER_LIST, USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
-  LOGIN, USER_DETAILS, USER_CONVERSATIONS, SINGLE_CONVERSIONS,
-  TYPING, USER_TYPING, NOT_TYPING, USER_NOT_TYPING
+  LOGIN, USER_CONVERSATIONS, SINGLE_CONVERSIONS,
+  TYPING, USER_TYPING
 } from "./Utils/SocketEvents";
 
 const app = express();
@@ -53,7 +53,6 @@ io.on('connection', (socket: any) => {
         is_online: true
       })
       callback(res);
-      console.log(users);
       updateUsers();
     })
   });
@@ -84,6 +83,13 @@ io.on('connection', (socket: any) => {
       callback(res.ops[0]);
     })
   });
+
+  socket.on(TYPING, function(payload: any){
+    console.log(payload);
+
+    io.to(`${payload.receiver_socket_id}`).emit(USER_TYPING, payload.typing);
+  });
+
   //
   // socket.on(SUBMIT_MESSAGE, async function(payload: any, callback: Function){
   //   await _chatView.submitMessage(payload, function(res: any){
@@ -104,18 +110,6 @@ io.on('connection', (socket: any) => {
   //   await _chatView.getSingleConversationS(user_id, function(res: any){
   //     callback(res);
   //   })
-  // });
-  //
-  // socket.on(TYPING, function(payload: any, callback: Function){
-  //   io.to(`${ payload.socket_id }`).emit(USER_TYPING, {
-  //     typeing: true,
-  //   });
-  // });
-  //
-  // socket.on(NOT_TYPING, function(payload: any, callback: Function){
-  //   io.to(`${ payload.socket_id }`).emit(USER_NOT_TYPING, {
-  //     typeing: false,
-  //   });
   // });
 
 });

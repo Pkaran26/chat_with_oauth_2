@@ -3,7 +3,6 @@ export const DISCONNECT = 'disconnect'
 export const ONLINEUSERS = 'ONLINEUSERS'
 
 export const LOGIN = 'LOGIN'
-export const USER_DETAILS = 'USER_DETAILS'
 
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const USER_LIST = 'USER_LIST';
@@ -16,6 +15,3 @@ export const SINGLE_CONVERSIONS = 'SINGLE_CONVERSIONS';
 
 export const TYPING = 'TYPING';
 export const USER_TYPING = 'USER_TYPING';
-
-export const NOT_TYPING = 'NOT_TYPING';
-export const USER_NOT_TYPING = 'USER_NOT_TYPING';

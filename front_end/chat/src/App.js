@@ -5,7 +5,7 @@ import Chat from './Components/Chat/Chat'
 class App extends React.Component {
   render(){
     return (
-      <div className="App">
+      <div className="App container-fluid">
         <Chat/>
       </div>
     )

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 
-const MessageForm = ({ submitMsg })=>{
+const MessageForm = ({ submitMsg, userTyping })=>{
   const [msg, setMsg] = useState('')
 
   const onSubmit = (e)=>{
     e.preventDefault()
     submitMsg(msg)
+    userTyping('')
     setMsg('')
   }
   return(
@@ -15,7 +16,10 @@ const MessageForm = ({ submitMsg })=>{
           type="text"
           placeholder="Enter something..."
           className="form-control"
-          onChange={ (e)=> setMsg(e.target.value) }
+          onChange={ (e)=>{
+            userTyping("typing...")
+            setMsg(e.target.value)
+          } }
           value={ msg }
           required={ true }
         />
