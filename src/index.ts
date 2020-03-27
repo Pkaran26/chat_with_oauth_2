@@ -41,7 +41,11 @@ io.on('connection', (socket: any) => {
 
   socket.on('disconnect', function(data: any){
     connections.splice(connections.indexOf(socket), 1);
-  //  updateUsers()
+    users = users.filter((e: any)=>{
+      console.log(e.socket_id, socket.id, e.socket_id !== socket.id);
+      return e.socket_id !== socket.id
+    })
+    updateUsers()
     console.log('Connected: ', connections.length);
   });
 
@@ -49,7 +53,7 @@ io.on('connection', (socket: any) => {
     await _userView.createUser(payload.payload, function(res: any){
       users.push({
         ...res,
-        socket_id: payload.socket_id,
+        socket_id: socket.id,
         is_online: true
       })
       callback(res);
@@ -59,15 +63,6 @@ io.on('connection', (socket: any) => {
 
   const updateUsers = ()=>{
     io.sockets.emit(USER_LIST, users);
-    try {
-      // users[socket_id] = {
-      //   ...users[socket_id],
-      //   is_online: false
-      // }
-
-    } catch (error) {
-
-    }
   }
 
   socket.on(GET_USER_LIST, async function(callback: Function){
@@ -107,7 +102,7 @@ io.on('connection', (socket: any) => {
   //
   socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
     console.log(payload);
-    
+
     await _chatView.getSingleConversationS(payload.msg_from, payload.msg_to, function(res: any){
       callback(res);
     })
