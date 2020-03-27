@@ -20,6 +20,10 @@
   left: 45px;
 }
 
+.text-gray{
+  color: lightgrey;
+}
+
 .messagebox {
   height: 300px;
   overflow: auto;

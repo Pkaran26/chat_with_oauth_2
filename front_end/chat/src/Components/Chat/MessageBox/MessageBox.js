@@ -3,15 +3,15 @@ import ScrollToBottom from 'react-scroll-to-bottom'
 import MessageForm from './MessageForm'
 import { LeftMessage, RightMessage } from './Message'
 
-const MessageBox = ({ currentUser: { _id, name, imageUrl }, messages, typing, userTyping, submitMsg })=>{
+const MessageBox = ({ currentUser: { _id, name, imageUrl, is_online }, messages, typing, userTyping, submitMsg })=>{
   return(
     <div className="card bg-light">
       <div className="card-header" style={{ position: 'relative' }}>
         <h5>
           <img src={ imageUrl } className="pic" />
-          <i class="fas fa-circle text-success online2"></i>
+          <i class={`fas fa-circle online2 ${ is_online? 'text-success': 'text-gray' }`}></i>
           { name }</h5>
-        <span>{ typing }</span>
+        <span style={{ position: 'absolute', left: '70px', bottom: '15px' }}>{ typing }</span>
       </div>
       <div className="card-body">
         <ScrollToBottom className="messagebox">

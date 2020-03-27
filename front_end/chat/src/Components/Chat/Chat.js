@@ -28,24 +28,6 @@ class Chat extends Component{
     this.socket = null
   }
 
-  setCurrentUser = (user)=>{
-    this.setState({
-      currentUser: user
-    })
-    const { currentUser, loggedUser } = this.state
-    const payload = {
-      msg_from: user._id,
-      msg_to: loggedUser._id
-    }
-    console.log(payload);
-    this.socket.emit(SINGLE_CONVERSIONS, payload, (data)=>{
-      console.log(data);
-      this.setState({
-        messages: data
-      })
-    })
-  }
-
   componentDidMount(){
     this.socket = socketIOClient('http://localhost:3005');
     this.socket.on(CONNECTION, ()=>{
@@ -67,6 +49,17 @@ class Chat extends Component{
       this.setState({
         users: users
       })
+      const { currentUser } = this.state
+      if(currentUser && currentUser._id){
+        const temp = users.filter((e)=>{
+          return e._id === currentUser._id
+        })
+        if(temp && temp.length>0){
+          this.setState({
+            currentUser: temp[0]
+          })
+        }
+      }
     })
 
     this.socket.on(NEW_MESSAGE, (data)=>{
@@ -88,6 +81,24 @@ class Chat extends Component{
     this.socket.emit(LOGIN, { payload, socket_id: this.state.socket_id }, (data)=>{
       this.setState({
         loggedUser: data
+      })
+    })
+  }
+
+  setCurrentUser = (user)=>{
+    this.setState({
+      currentUser: user
+    })
+    const { currentUser, loggedUser } = this.state
+    const payload = {
+      msg_from: user._id,
+      msg_to: loggedUser._id
+    }
+    console.log(payload);
+    this.socket.emit(SINGLE_CONVERSIONS, payload, (data)=>{
+      console.log(data);
+      this.setState({
+        messages: data
       })
     })
   }

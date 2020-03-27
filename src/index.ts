@@ -62,20 +62,35 @@ io.on('connection', (socket: any) => {
     })
   });
 
-  const updateUsers = ()=>{
+  const updateUsers = async ()=>{
     io.sockets.emit(USER_LIST, users);
-  }
-
-  socket.on(GET_USER_LIST, async function(callback: Function){
-    await _userView.userList(function(users: any){
-      callback(users);
+    await _userView.userList(function(allUsers: any){
+      let offlineUsers: any = [];
+      for (let i = 0; i < allUsers.length; i++) {
+        let j = 0;
+        for (j = 0; j < users.length; j++) {
+          if(users[j]._id.toString() == allUsers[i]._id.toString()){
+            break
+          }
+        }
+        if(j == users.length){
+          offlineUsers = [...offlineUsers, {
+            ...allUsers[i],
+            socket_id: '',
+            is_online: false
+          }]
+        }
+      }
+      io.sockets.emit(USER_LIST, [...users, ...offlineUsers]);
     })
     .catch((err: any)=>{});
-  });
+  }
 
   socket.on(SUBMIT_MESSAGE, async function(payload: any, callback: Function){
     await _chatView.submitMessage(payload.message, function(res: any){
-      io.to(`${payload.receiver_socket_id}`).emit(NEW_MESSAGE, payload.message);
+      if(payload.receiver_socket_id){
+        io.to(`${payload.receiver_socket_id}`).emit(NEW_MESSAGE, payload.message);
+      }
       callback(res.ops[0]);
     })
   });

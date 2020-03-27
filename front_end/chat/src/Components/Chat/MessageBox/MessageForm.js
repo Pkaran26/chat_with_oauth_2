@@ -17,7 +17,11 @@ const MessageForm = ({ submitMsg, userTyping })=>{
           placeholder="Enter something..."
           className="form-control"
           onChange={ (e)=>{
-            userTyping("typing...")
+            if(e.target.value){
+              userTyping("typing...")
+            }else {
+              userTyping("")
+            }
             setMsg(e.target.value)
           } }
           value={ msg }
