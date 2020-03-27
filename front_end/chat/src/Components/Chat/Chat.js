@@ -8,10 +8,9 @@ import Header from '../Shared/Header'
 
 import {
   CONNECTION, DISCONNECT, LOGIN,
-  GET_USER_LIST, USER_LIST,
-  SUBMIT_MESSAGE, NEW_MESSAGE,
-  SINGLE_CONVERSIONS,
-  TYPING, USER_TYPING, NOT_TYPING
+  USER_LIST, SUBMIT_MESSAGE,
+  NEW_MESSAGE, SINGLE_CONVERSIONS,
+  TYPING, USER_TYPING
 } from "./SocketEvents";
 
 class Chat extends Component{
@@ -70,7 +69,6 @@ class Chat extends Component{
     })
 
     this.socket.on(USER_TYPING, (data)=>{
-      const { typing }= this.state
       this.setState({
         typing: data
       })
@@ -89,7 +87,7 @@ class Chat extends Component{
     this.setState({
       currentUser: user
     })
-    const { currentUser, loggedUser } = this.state
+    const { loggedUser } = this.state
     const payload = {
       msg_from: user._id,
       msg_to: loggedUser._id

@@ -8,8 +8,7 @@ import { UserView } from './User/Controllers';
 import { ChatView } from "./Chat/Controllers";
 
 import {
-  GET_USER_LIST, USER_LIST,
-  SUBMIT_MESSAGE, NEW_MESSAGE,
+  USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
   LOGIN, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING
 } from "./Utils/SocketEvents";

@@ -8,7 +8,7 @@ const MessageBox = ({ currentUser: { _id, name, imageUrl, is_online }, messages,
     <div className="card bg-light">
       <div className="card-header" style={{ position: 'relative' }}>
         <h5>
-          <img src={ imageUrl } className="pic" />
+          <img src={ imageUrl } className="pic" alt="userimg2" />
           <i class={`fas fa-circle online2 ${ is_online? 'text-success': 'text-gray' }`}></i>
           { name }</h5>
         <span style={{ position: 'absolute', left: '70px', bottom: '15px' }}>{ typing }</span>

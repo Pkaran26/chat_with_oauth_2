@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 const Header = ({ name, imageUrl })=>{
 
@@ -19,7 +19,7 @@ const Header = ({ name, imageUrl })=>{
           <li className="nav-item dropdown" style={{ position: 'relative' }}>
             <strong>
               <i className="fas fa-door-open"></i> Welcome&nbsp;{ name }&nbsp;&nbsp;
-                <img src={ imageUrl } className="pic" />
+                <img src={ imageUrl } className="pic" alt="userimg" />
             </strong>
           </li>
         </ul>
