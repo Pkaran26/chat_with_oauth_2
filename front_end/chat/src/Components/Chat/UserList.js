@@ -6,7 +6,7 @@ const UserList = ({ users, returnUser })=>{
       <div className="card-header">
         <h5>Users List</h5>
       </div>
-      <div className="card-body">
+      <div className="card-body" style={{ overFlow: 'auto', height: '437px'}}>
       <div className="list-group">
         { users && users.length>0?
           users.map((e, i)=>(
