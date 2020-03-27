@@ -8,8 +8,9 @@ import { UserView } from './User/Controllers';
 import { ChatView } from "./Chat/Controllers";
 
 import {
-  GET_USER_LIST, USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
-  LOGIN, USER_CONVERSATIONS, SINGLE_CONVERSIONS,
+  GET_USER_LIST, USER_LIST,
+  SUBMIT_MESSAGE, NEW_MESSAGE,
+  LOGIN, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING
 } from "./Utils/SocketEvents";
 
@@ -85,21 +86,6 @@ io.on('connection', (socket: any) => {
     io.to(`${payload.receiver_socket_id}`).emit(USER_TYPING, payload.typing);
   });
 
-  //
-  // socket.on(SUBMIT_MESSAGE, async function(payload: any, callback: Function){
-  //   await _chatView.submitMessage(payload, function(res: any){
-  //     callback(res);
-  //   })
-  // });
-  //
-  //
-  // socket.on(USER_CONVERSATIONS, async function(payload: any, callback: Function){
-  //   const { user_id } = payload
-  //   await _chatView.getUserConversations(user_id, function(res: any){
-  //     callback(res);
-  //   })
-  // });
-  //
   socket.on(SINGLE_CONVERSIONS, async function(payload: any, callback: Function){
     console.log(payload);
 

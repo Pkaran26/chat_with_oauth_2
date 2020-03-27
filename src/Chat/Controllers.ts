@@ -25,28 +25,6 @@ export class ChatView {
     }
   }
 
-  async getUserConversations(user_id: string, callback: Function){
-    try {
-      DBPool( async (db: any)=>{
-        const res = await db.collection(this.user).findMany(
-          { _id: new ObjectId(user_id) },
-          { $lookup: {
-            from: "user",
-            localField: "conversations",
-            foreignField: "_id",
-            as: "conversations",
-          } },
-          { $project: { password: 0 } }
-        )
-        .catch((err: any)=>{  })
-        callback(res);
-      });
-    } catch (err) {
-      console.log(err);
-      return null;
-    }
-  }
-
   async getSingleConversationS(msg_from: string, msg_to: string, callback: Function){
     try {
       DBPool( async (db: any)=>{
