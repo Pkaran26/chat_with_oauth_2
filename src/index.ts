@@ -52,6 +52,7 @@ io.on('connection', (socket: any) => {
     await _userView.createUser(payload.payload, function(res: any){
       users.push({
         ...res,
+        message_count: 0,
         socket_id: socket.id,
         is_online: true
       })
@@ -74,6 +75,7 @@ io.on('connection', (socket: any) => {
         if(j == users.length){
           offlineUsers = [...offlineUsers, {
             ...allUsers[i],
+            message_count: 0,
             socket_id: '',
             is_online: false
           }]

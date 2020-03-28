@@ -26,8 +26,11 @@ const UserList = ({ users, returnUser })=>{
 const User = ({ e, returnUser })=>(
   <span className="list-group-item list-group-item-action cursor" style={{ position: 'relative' }} onClick={ ()=> returnUser(e) }>
     <img src={ e.imageUrl } className="pic" alt="userimg1" />
-    <i class={`fas fa-circle online ${ e.is_online? 'text-success': 'text-gray' }`}></i>
+    <i className={`fas fa-circle online ${ e.is_online? 'text-success': 'text-gray' }`}></i>
     { e.name }
+    { e.message_count?
+      <span className="badge badge-danger message_count">{ e.message_count }</span>
+    :null }
   </span>
 )
 

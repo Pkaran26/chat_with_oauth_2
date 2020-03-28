@@ -66,6 +66,7 @@ class Chat extends Component{
       this.setState({
         messages: [...messages, data]
       })
+      this.setMesssageCount(data)
     })
 
     this.socket.on(USER_TYPING, (data)=>{
@@ -73,6 +74,38 @@ class Chat extends Component{
         typing: data
       })
     })
+  }
+
+  setMesssageCount = (data)=>{
+    const { users, currentUser }= this.state
+    let temp = [...users]
+    if((currentUser && data.msg_from !== currentUser._id) || (!currentUser)){
+      if(users.length>0){
+        for (let i = 0; i < users.length; i++) {
+          if(users[i]._id === data.msg_from){
+            temp[i].message_count += 1
+            this.setState({
+              users: temp
+            })
+            break
+          }
+        }
+      }
+    }
+  }
+
+  resetMessgaeCount = (selectedUser)=>{
+    const { users }= this.state
+    let temp = [...users]
+    for (let i = 0; i < users.length; i++) {
+      if(users[i]._id === selectedUser._id){
+        temp[i].message_count = 0
+        this.setState({
+          users: temp
+        })
+        break
+      }
+    }
   }
 
   userLogin = (payload)=>{
@@ -87,14 +120,13 @@ class Chat extends Component{
     this.setState({
       currentUser: user
     })
+    this.resetMessgaeCount(user)
     const { loggedUser } = this.state
     const payload = {
       msg_from: user._id,
       msg_to: loggedUser._id
     }
-    console.log(payload);
     this.socket.emit(SINGLE_CONVERSIONS, payload, (data)=>{
-      console.log(data);
       this.setState({
         messages: data
       })

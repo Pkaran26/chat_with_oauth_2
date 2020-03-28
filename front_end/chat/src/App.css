@@ -20,6 +20,13 @@
   left: 45px;
 }
 
+.message_count{
+  position: absolute;
+  right: 10px;
+  top: 22px;
+  font-size: 10px;
+}
+
 .text-gray{
   color: lightgrey;
 }
