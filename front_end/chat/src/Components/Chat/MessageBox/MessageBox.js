@@ -1,17 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ScrollToBottom from 'react-scroll-to-bottom'
 import MessageForm from './MessageForm'
 import { LeftMessage, RightMessage } from './Message'
+import AttachModel from './AttachModel'
 
-const MessageBox = ({ currentUser: { _id, name, imageUrl, is_online }, messages, typing, userTyping, submitMsg })=>{
+const MessageBox = ({ currentUser: { _id, name, imageUrl, is_online }, messages, typing, userTyping, submitMsg, submitAttach })=>{
+  const [attachModel, setAttachModel] = useState(false)
+
   return(
     <div className="card bg-light">
+      { attachModel?
+        <AttachModel
+          returnAttach={ (files)=> submitAttach(files) }
+          close={ ()=> setAttachModel(false) }
+        />
+      :null }
       <div className="card-header" style={{ position: 'relative' }}>
         <h5>
           <img src={ imageUrl } className="pic" alt="userimg2" />
           <i class={`fas fa-circle online2 ${ is_online? 'text-success': 'text-gray' }`}></i>
           { name }</h5>
         <span style={{ position: 'absolute', left: '70px', bottom: '15px' }}>{ typing }</span>
+        <button className="btn btn-secondary btn-sm  attachBtn" onClick={ ()=>setAttachModel(true) }>
+          <i className="fas fa-paperclip"></i>
+        </button>
       </div>
       <div className="card-body">
         <ScrollToBottom className="messagebox">

@@ -8,7 +8,7 @@ import Header from '../Shared/Header'
 
 import {
   CONNECTION, DISCONNECT, LOGIN,
-  USER_LIST, SUBMIT_MESSAGE,
+  USER_LIST, SUBMIT_MESSAGE, ATTACH_FILE,
   NEW_MESSAGE, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING
 } from "./SocketEvents";
@@ -152,6 +152,25 @@ class Chat extends Component{
     })
   }
 
+  submitAttach = (files)=>{
+    const { loggedUser, currentUser, messages } = this.state
+    const message = {
+      msg_from: loggedUser._id,
+      msg_to: currentUser._id,
+      files,
+      created_at: moment().format('YYYY-MM-DD')
+    }
+    const payload = {
+      message,
+      receiver_socket_id: currentUser.socket_id
+    }
+    this.socket.emit(ATTACH_FILE, payload, (data)=>{
+      this.setState({
+        messages: [...messages, data]
+      })
+    })
+  }
+
   userTyping = (value)=>{
     const { currentUser } = this.state
     this.socket.emit(TYPING, {
@@ -185,6 +204,7 @@ class Chat extends Component{
                   typing={ typing }
                   userTyping={ this.userTyping }
                   submitMsg={ this.submitMsg }
+                  submitAttach={ this.submitAttach }
                 />
             :null }
             </div>

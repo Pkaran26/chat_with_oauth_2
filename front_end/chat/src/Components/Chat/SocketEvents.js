@@ -7,6 +7,7 @@ export const LOGIN = 'LOGIN'
 export const USER_LIST = 'USER_LIST';
 
 export const SUBMIT_MESSAGE = 'SUBMIT_MESSAGE';
+export const ATTACH_FILE = 'ATTACH_FILE';
 export const NEW_MESSAGE = 'NEW_MESSAGE';
 
 export const SINGLE_CONVERSIONS = 'SINGLE_CONVERSIONS';
