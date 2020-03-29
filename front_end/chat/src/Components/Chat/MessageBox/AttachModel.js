@@ -45,7 +45,8 @@ const AttachModel = ({ returnAttach, close })=>{
   }
 
   return(
-    <div className="modal show" style={{ display: 'block'}}>
+    <div className="shadow">
+      <div className="modal show" style={{ display: 'block', top: '80px'}}>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -84,6 +85,7 @@ const AttachModel = ({ returnAttach, close })=>{
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }
