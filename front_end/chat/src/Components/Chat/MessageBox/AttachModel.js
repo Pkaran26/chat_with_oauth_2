@@ -33,8 +33,17 @@ const AttachModel = ({ returnAttach, close })=>{
   }
 
   const bufferTobase64 = (e)=>{
-    const buffer = btoa(String.fromCharCode(...new Uint8Array(e.data)))
-    return `data:${e.contentType };base64,${ buffer }`
+    try {
+      let TYPED_ARRAY = new Uint8Array(e.data);
+      const STRING_CHAR = TYPED_ARRAY.reduce((data, byte)=> {
+        return data + String.fromCharCode(byte);
+      }, '');
+
+      //const buffer = btoa(String.fromCharCode(...new Uint8Array(e.data)))
+      return `data:${e.contentType };base64,${ btoa(STRING_CHAR) }`
+    } catch (e) {
+      return null
+    }
   }
 
   const sendFile = ()=>{
@@ -58,16 +67,16 @@ const AttachModel = ({ returnAttach, close })=>{
           <div className="modal-body">
             { files && files.length>0?
               files.map((e, i)=>(
-                <img src={ bufferTobase64(e) } style={{
+                <img key={ i } src={ bufferTobase64(e) } style={{
                   width: '140px',
                   height: '140px',
                   marginRight: '5px'
-                }} class="img-thumbnail" alt={ e.name } />
+                }} className="img-thumbnail" alt={ e.name } />
               ))
             :null }
             { files && files.length < 6?
               <React.Fragment>
-                <label for="inputGroupFile02" className="btn btn-secondary" style={{
+                <label htmlFor="inputGroupFile02" className="btn btn-secondary" style={{
                   width: '140px',
                   height: '140px',
                   paddingTop: '47px',
