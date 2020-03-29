@@ -130,8 +130,6 @@ io.on('connection', (socket: any) => {
             if(payload.receiver_socket_id){
               io.to(`${payload.receiver_socket_id}`).emit(NEW_MESSAGE, res.ops[0]);
             }
-            console.log(payload);
-
             if(payload.sender_socket_id){
               io.to(`${payload.sender_socket_id}`).emit(NEW_MESSAGE, res.ops[0]);
             }
