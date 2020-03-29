@@ -5,7 +5,7 @@ import MessageBox from './MessageBox/MessageBox'
 import moment from 'moment'
 import UserLogin from '../User/UserLogin'
 import Header from '../Shared/Header'
-
+import { SERVER_URL } from '../Shared/Urls'
 import {
   CONNECTION, DISCONNECT, LOGIN,
   USER_LIST, SUBMIT_MESSAGE, ATTACH_FILE,
@@ -28,7 +28,7 @@ class Chat extends Component{
   }
 
   componentDidMount(){
-    this.socket = socketIOClient('http://localhost:3005');
+    this.socket = socketIOClient(`${ SERVER_URL }`);
     this.socket.on(CONNECTION, ()=>{
       this.setState({
         socket_id: this.socket.id
@@ -153,7 +153,7 @@ class Chat extends Component{
   }
 
   submitAttach = (files)=>{
-    const { loggedUser, currentUser, messages } = this.state
+    const { loggedUser, currentUser, messages, socket_id } = this.state
     const message = {
       msg_from: loggedUser._id,
       msg_to: currentUser._id,
@@ -162,7 +162,8 @@ class Chat extends Component{
     }
     const payload = {
       message,
-      receiver_socket_id: currentUser.socket_id
+      receiver_socket_id: currentUser.socket_id,
+      sender_socket_id: socket_id
     }
     this.socket.emit(ATTACH_FILE, payload, (data)=>{
       this.setState({

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import moment from 'moment'
 
 const AttachModel = ({ returnAttach, close })=>{
   const [files, setFiles] = useState([])
@@ -9,7 +10,7 @@ const AttachModel = ({ returnAttach, close })=>{
       let file = e.target.files[0]
       createBuffer(file, (buffer)=>{
         const payload = {
-          name: file.name,
+          name: `${ moment().format('DD-MMM-YY_hh-mm_A') }_${ file.name }`,
           contentType: file.type,
           size: file.size,
           data: buffer,
