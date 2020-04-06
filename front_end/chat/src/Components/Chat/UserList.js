@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserList = ({ users, returnUser })=>{
   return(
-    <div className="card bg-light">
+    <div className="card bg-light userlist">
       <div className="card-header">
         <h5>Users List</h5>
       </div>

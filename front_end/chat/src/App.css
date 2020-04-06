@@ -16,8 +16,8 @@
 
 .online2{
   position: absolute;
-  bottom: 18px;
-  left: 45px;
+  bottom: 3px;
+  left: 34px;
 }
 
 .message_count{
@@ -38,8 +38,8 @@
 
 .attachBtn{
   position: absolute;
-  right: 22px;
-  bottom: 22px;
+  right: 8px;
+  bottom: 8px;
   font-size: 18px;
 }
 .shadow{
@@ -89,4 +89,45 @@
 ::-webkit-scrollbar-thumb {
   background: #959696;
   border-radius: 2px;
+}
+
+.userlist{
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  top: 84px;
+}
+
+.messagewrap{
+  position: fixed;
+  width: 350px;
+  bottom: 0;
+  right: 450px;
+  color: black;
+}
+
+.messageHeader{
+  position: relative;
+  padding: 5px;
+  cursor: pointer;
+  height: 48px;
+}
+
+.maximizeBody{
+  height: 300px;
+  padding: 10px;
+}
+
+.minimizeBody{
+  height: 0;
+  padding: 0;
+}
+
+.maximizeFooter{
+  height: 52px;
+}
+
+.minimizeFooter{
+  height: 0;
 }
