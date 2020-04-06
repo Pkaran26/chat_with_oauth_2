@@ -1,15 +1,17 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import moment from 'moment';
+import sharp from 'sharp';
+import fs from 'fs';
 import UserRouters from "./User/Routers";
 import { UserView } from './User/Controllers';
 
 import { ChatView } from "./Chat/Controllers";
 
 import {
-  USER_LIST, SUBMIT_MESSAGE, NEW_MESSAGE,
-  LOGIN, SINGLE_CONVERSIONS,
+  USER_LIST, SUBMIT_MESSAGE, ATTACH_FILE,
+  NEW_MESSAGE, LOGIN, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING
 } from "./Utils/SocketEvents";
 
@@ -28,6 +30,16 @@ let socketIO = require('socket.io');
 let io = socketIO(server);
 
 const port = process.env.PORT || 3005;
+
+const filesDir = `${ __dirname }/files`;
+const thumpDir = `${ __dirname }/files/thumb`;
+const originalDir = `${ __dirname }/files/original`;
+
+if (!fs.existsSync(filesDir)){
+    fs.mkdirSync(filesDir);
+    fs.mkdirSync(thumpDir);
+    fs.mkdirSync(originalDir);
+}
 
 let connections: any = [];
 const _userView = new UserView();
@@ -52,6 +64,7 @@ io.on('connection', (socket: any) => {
     await _userView.createUser(payload.payload, function(res: any){
       users.push({
         ...res,
+        message_count: 0,
         socket_id: socket.id,
         is_online: true
       })
@@ -74,6 +87,7 @@ io.on('connection', (socket: any) => {
         if(j == users.length){
           offlineUsers = [...offlineUsers, {
             ...allUsers[i],
+            message_count: 0,
             socket_id: '',
             is_online: false
           }]
@@ -93,6 +107,41 @@ io.on('connection', (socket: any) => {
     })
   });
 
+  socket.on(ATTACH_FILE, async function(payload: any){
+    const files = payload.message.files;
+    for (let i = 0; i < files.length; i++) {
+      fs.writeFile(`${ originalDir }/${ files[i].name }`, files[i].data, function(err: any) {
+        if(err){
+          //continue;
+        }
+        sharp(`${ originalDir }/${ files[i].name }`)
+        .resize({ height: 300, width: 400 })
+        .toFile(`${ thumpDir }/thumb_${ files[i].name }`)
+        .then( async function(newFileInfo: any) {
+          files[i].data = `${ files[i].name }`
+          files[i].thumb = `thumb_${ files[i].name }`
+          const newPayload = {
+            msg_from: payload.message.msg_from,
+            msg_to: payload.message.msg_to,
+            file: files[i],
+            created_at: moment().format('YYYY-MM-DD')
+          }
+          await _chatView.submitMessage(newPayload, function(res: any){
+            if(payload.receiver_socket_id){
+              io.to(`${payload.receiver_socket_id}`).emit(NEW_MESSAGE, res.ops[0]);
+            }
+            if(payload.sender_socket_id){
+              io.to(`${payload.sender_socket_id}`).emit(NEW_MESSAGE, res.ops[0]);
+            }
+          })
+        })
+        .catch(function(err: any) {
+          //continue;
+        });
+      });
+    }
+  });
+
   socket.on(TYPING, function(payload: any){
     io.to(`${payload.receiver_socket_id}`).emit(USER_TYPING, payload.typing);
   });
@@ -105,6 +154,13 @@ io.on('connection', (socket: any) => {
 
 });
 
+app.get('/thumb/:name', function(req: Request, res: Response) {
+  res.sendFile(`${ __dirname }/files/thumb/${ req.params.name }`)
+});
+
+app.get('/file/:name', function(req: Request, res: Response) {
+  res.sendFile(`${ __dirname }/files/original/${ req.params.name }`)
+});
 
 server.listen(port, () => {
     console.log(`started on port: ${port}`);

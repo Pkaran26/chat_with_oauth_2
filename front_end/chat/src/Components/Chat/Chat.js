@@ -5,10 +5,10 @@ import MessageBox from './MessageBox/MessageBox'
 import moment from 'moment'
 import UserLogin from '../User/UserLogin'
 import Header from '../Shared/Header'
-
+import { SERVER_URL } from '../Shared/Urls'
 import {
   CONNECTION, DISCONNECT, LOGIN,
-  USER_LIST, SUBMIT_MESSAGE,
+  USER_LIST, SUBMIT_MESSAGE, ATTACH_FILE,
   NEW_MESSAGE, SINGLE_CONVERSIONS,
   TYPING, USER_TYPING
 } from "./SocketEvents";
@@ -28,7 +28,7 @@ class Chat extends Component{
   }
 
   componentDidMount(){
-    this.socket = socketIOClient('http://localhost:3005');
+    this.socket = socketIOClient(`${ SERVER_URL }`);
     this.socket.on(CONNECTION, ()=>{
       this.setState({
         socket_id: this.socket.id
@@ -66,6 +66,7 @@ class Chat extends Component{
       this.setState({
         messages: [...messages, data]
       })
+      this.setMesssageCount(data)
     })
 
     this.socket.on(USER_TYPING, (data)=>{
@@ -73,6 +74,38 @@ class Chat extends Component{
         typing: data
       })
     })
+  }
+
+  setMesssageCount = (data)=>{
+    const { users, currentUser }= this.state
+    let temp = [...users]
+    if((currentUser && data.msg_from !== currentUser._id) || (!currentUser)){
+      if(users.length>0){
+        for (let i = 0; i < users.length; i++) {
+          if(users[i]._id === data.msg_from){
+            temp[i].message_count += 1
+            this.setState({
+              users: temp
+            })
+            break
+          }
+        }
+      }
+    }
+  }
+
+  resetMessgaeCount = (selectedUser)=>{
+    const { users }= this.state
+    let temp = [...users]
+    for (let i = 0; i < users.length; i++) {
+      if(users[i]._id === selectedUser._id){
+        temp[i].message_count = 0
+        this.setState({
+          users: temp
+        })
+        break
+      }
+    }
   }
 
   userLogin = (payload)=>{
@@ -87,14 +120,13 @@ class Chat extends Component{
     this.setState({
       currentUser: user
     })
+    this.resetMessgaeCount(user)
     const { loggedUser } = this.state
     const payload = {
       msg_from: user._id,
       msg_to: loggedUser._id
     }
-    console.log(payload);
     this.socket.emit(SINGLE_CONVERSIONS, payload, (data)=>{
-      console.log(data);
       this.setState({
         messages: data
       })
@@ -114,6 +146,26 @@ class Chat extends Component{
       receiver_socket_id: currentUser.socket_id
     }
     this.socket.emit(SUBMIT_MESSAGE, payload, (data)=>{
+      this.setState({
+        messages: [...messages, data]
+      })
+    })
+  }
+
+  submitAttach = (files)=>{
+    const { loggedUser, currentUser, messages, socket_id } = this.state
+    const message = {
+      msg_from: loggedUser._id,
+      msg_to: currentUser._id,
+      files,
+      created_at: moment().format('YYYY-MM-DD')
+    }
+    const payload = {
+      message,
+      receiver_socket_id: currentUser.socket_id,
+      sender_socket_id: socket_id
+    }
+    this.socket.emit(ATTACH_FILE, payload, (data)=>{
       this.setState({
         messages: [...messages, data]
       })
@@ -153,6 +205,7 @@ class Chat extends Component{
                   typing={ typing }
                   userTyping={ this.userTyping }
                   submitMsg={ this.submitMsg }
+                  submitAttach={ this.submitAttach }
                 />
             :null }
             </div>

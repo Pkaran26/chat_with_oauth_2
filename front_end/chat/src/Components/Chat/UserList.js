@@ -2,7 +2,7 @@ import React from 'react'
 
 const UserList = ({ users, returnUser })=>{
   return(
-    <div className="card bg-light">
+    <div className="card bg-light userlist">
       <div className="card-header">
         <h5>Users List</h5>
       </div>
@@ -26,8 +26,11 @@ const UserList = ({ users, returnUser })=>{
 const User = ({ e, returnUser })=>(
   <span className="list-group-item list-group-item-action cursor" style={{ position: 'relative' }} onClick={ ()=> returnUser(e) }>
     <img src={ e.imageUrl } className="pic" alt="userimg1" />
-    <i class={`fas fa-circle online ${ e.is_online? 'text-success': 'text-gray' }`}></i>
+    <i className={`fas fa-circle online ${ e.is_online? 'text-success': 'text-gray' }`}></i>
     { e.name }
+    { e.message_count?
+      <span className="badge badge-danger message_count">{ e.message_count }</span>
+    :null }
   </span>
 )
 
