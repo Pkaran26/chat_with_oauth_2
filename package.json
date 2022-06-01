@@ -31,7 +31,7 @@
     "moment": "^2.24.0",
     "mongodb": "^3.5.5",
     "react-google-login": "^5.1.2",
-    "sharp": "^0.25.2",
+    "sharp": "^0.30.5",
     "socket.io": "^2.3.0"
   }
 }
